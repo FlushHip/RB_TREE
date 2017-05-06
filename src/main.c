@@ -28,7 +28,7 @@ int main()
 {
 	int i;
 	int array[] = {2, 3, 7, -4, 5, 11, -11, 0, 56, 78, -100, 30}, size = sizeof(array) / sizeof(int);
-	int b[] = {7, 99999, -4, 5}, b_size = sizeof(b) / sizeof(int);
+	int b[] = {7, -4, 5}, b_size = sizeof(b) / sizeof(int);
 
 	pRB_TREE T = (pRB_TREE)malloc(sizeof(RB_TREE));
 	INIT_RB_TREE(T);
@@ -36,7 +36,7 @@ int main()
 	for (i = 0; i < size; i++)
 		printf("%d%s", array[i], i == size - 1 ? "\n" : ", ");
 	for (i = 0; i < size; i++)
-		T->RB_TREE_INSERT(T, array[i]);
+		T->insert(T, array[i]);
 	print_RB_TREE(T);
 	
 	for (i = 0; i < b_size; i++) {

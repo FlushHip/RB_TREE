@@ -91,6 +91,9 @@ void RB_TREE_INSERT_FIX(pRB_TREE T, pRB_TREE_NODE node)
 
 void ROTATE_LEFT(pRB_TREE T, pRB_TREE_NODE node)
 {
+	if (node == T->root)
+		T->root = node->right;
+
 	if (node == node->parent->left)
 		node->parent->left = node->right;
 	else
@@ -109,6 +112,9 @@ void ROTATE_LEFT(pRB_TREE T, pRB_TREE_NODE node)
 
 void ROTATE_RIGHT(pRB_TREE T, pRB_TREE_NODE node)
 {
+	if (node == T->root)
+		T->root = node->left;
+
 	if (node == node->parent->left)
 		node->parent->left = node->left;
 	else
@@ -205,7 +211,7 @@ void RB_TREE_DELETE_FIX(pRB_TREE T, pRB_TREE_NODE node)
 				node->parent->color = BLACK;
 				brother->right->color = BLACK;
 				ROTATE_LEFT(T, node->parent);
-				x = T->root		// break;
+				node = T->root;		// break;
 			}
 		} else {
 			pRB_TREE_NODE brother = node->parent->left;
@@ -226,7 +232,7 @@ void RB_TREE_DELETE_FIX(pRB_TREE T, pRB_TREE_NODE node)
 				node->parent->color = BLACK;
 				brother->left->color = BLACK;
 				ROTATE_RIGHT(T, node->parent);
-				x = T->root		// break;
+				node = T->root;		// break;
 			}
 		}
 	}
