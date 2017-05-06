@@ -124,3 +124,113 @@ void ROTATE_RIGHT(pRB_TREE T, pRB_TREE_NODE node)
 
 	node->parent->right = node;
 }
+
+void RB_TRANSPLANT(pRB_TREE T, pRB_TREE_NODE u, pRB_TREE_NODE v)
+{
+    if (u->parent == T->nil)
+    	T->root = v;
+    else if (u->parent->left == u)
+    	u->parent->left = v;
+    else
+    	u->parent->right = v;
+    v->parent = u->parent;
+}
+
+pRB_TREE_NODE RB_TREE_FIND_MININUM(pRB_TREE T, pRB_TREE_NODE start)
+{
+	pRB_TREE_NODE now = start, pre = now;
+	for (; now != T->nil; pre = now, now = now->left);
+	return pre;
+}
+
+pRB_TREE_NODE RB_TREE_FIND_MAXINUM(pRB_TREE T, pRB_TREE_NODE start)
+{
+	pRB_TREE_NODE now = start, pre = now;
+	for (; now != T->nil; pre = now, now = now->right);
+	return pre;
+}
+
+void RB_TREE_DELETE(pRB_TREE T, pRB_TREE_NODE node)
+{
+	pRB_TREE_NODE y = node, x = NULL;
+	COLOR y_original_color = y->color;
+	
+	if (node->left == T->nil) {
+		x = node->right;
+		RB_TRANSPLANT(T, node, x);
+	} else if (node->right == T->nil) {
+		x = node->left;
+		RB_TRANSPLANT(T, node, x);
+	} else {
+		y = RB_TREE_FIND_MININUM(T, node->right);
+		x = y->right;
+		
+		if (y->parent != node) {
+			RB_TRANSPLANT(T, y, x);
+			y->right = node->right;
+			y->right->parent = y;
+		}
+		
+		RB_TRANSPLANT(T, node, y);
+		y->left = node->left;
+		y->left->parent = y;
+		y->color = node->color;
+	}
+	
+	if (y_original_color == BLACK)
+		RB_TREE_DELETE_FIX(T, x);
+	
+	free(node);
+}
+
+void RB_TREE_DELETE_FIX(pRB_TREE T, pRB_TREE_NODE node)
+{
+	while (node != T->root && node->color == BLACK) {
+		if (node == node->parent->left) {
+			pRB_TREE_NODE brother = node->parent->right;
+			
+			if (brother->color == RED) {													// 11
+				brother->color = BLACK;
+				node->parent->color = RED;
+				ROTATE_LEFT(T, node->parent);
+			} else if (brother->left->color == BLACK && brother->right->color == BLACK) {	// 12
+				brother->color = RED;
+				node = node->parent;
+			} else if (brother->right->color == BLACK) {									// 13
+				brother->color = RED;
+				brother->left->color = BLACK;
+				ROTATE_RIGHT(T, brother);
+			} else {																		// 14
+				brother->color = node->parent->color;
+				node->parent->color = BLACK;
+				brother->right->color = BLACK;
+				ROTATE_LEFT(T, node->parent);
+				x = T->root		// break;
+			}
+		} else {
+			pRB_TREE_NODE brother = node->parent->left;
+			
+			if (brother->color == RED) {													// 21
+				brother->color = BLACK;
+				node->parent->color = RED;
+				ROTATE_RIGHT(T, node->parent);
+			} else if (brother->right->color == BLACK && brother->left->color == BLACK) {	// 22
+				brother->color = RED;
+				node = node->parent;
+			} else if (brother->left->color == BLACK) {										// 23
+				brother->color = RED;
+				brother->right->color = BLACK;
+				ROTATE_LEFT(T, brother);
+			} else {																		// 24
+				brother->color = node->parent->color;
+				node->parent->color = BLACK;
+				brother->left->color = BLACK;
+				ROTATE_RIGHT(T, node->parent);
+				x = T->root		// break;
+			}
+		}
+	}
+	node->color = BLACK;
+}
+
+
