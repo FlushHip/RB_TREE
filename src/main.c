@@ -28,7 +28,7 @@ int main()
 {
 	int i;
 	int array[] = {2, 3, 7, -4, 5, 11, -11, 0, 56, 78, -100, 30}, size = sizeof(array) / sizeof(int);
-	int b[] = {7, -4, 5}, b_size = sizeof(b) / sizeof(int);
+	int b[] = {2, 3, 99999, -4, 5}, b_size = sizeof(b) / sizeof(int);
 
 	pRB_TREE T = (pRB_TREE)malloc(sizeof(RB_TREE));
 	INIT_RB_TREE(T);
